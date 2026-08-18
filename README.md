@@ -2,7 +2,7 @@
 
 ## Introduction
 
-A copy of demos performed in lecture for [COMP/STAT 212 Intermediate Data Science] course taught at Macalester College in Fall 2026.
+A copy of demos performed in lecture for COMP/STAT 212 Intermediate Data Science course taught at Macalester College in Fall 2026.
 
 
 ## How to Navigate
