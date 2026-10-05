@@ -1,0 +1,92 @@
+
+```{r}
+# Load required libraries
+library(microbenchmark)
+library(dplyr)
+library(ggplot2)
+```
+
+
+```{r}
+# Set seed for reproducibility
+set.seed(42)
+
+# Generate synthetic dataset (1 million rows)
+n <- 1e6
+x <- runif(n, min = 0, max = 100)
+```
+
+
+1. Base R: Loop with standard if - else if - else
+```{r}
+if_else_loop <- function(vec) {
+  res <- character(length(vec))
+  for (i in seq_along(vec)) {
+    val <- vec[i]
+    if (val < 25) {
+      res[i] <- "Low"
+    } else if (val < 75) {
+      res[i] <- "Medium"
+    } else {
+      res[i] <- "High"
+    }
+  }
+  res
+}
+```
+
+
+2. Base R: Vectorized ifelse()
+```{r}
+base_ifelse <- function(vec) {
+  ifelse(vec < 25, "Low",
+    ifelse(vec < 75, "Medium", "High")
+  )
+}
+```
+
+
+3. dplyr: Vectorized if_else()
+```{r}
+dplyr_if_else <- function(vec) {
+  if_else(vec < 25, "Low",
+    if_else(vec < 75, "Medium", "High")
+  )
+}
+```
+
+
+4. dplyr: Vectorized case_when()
+```{r}
+dplyr_case_when <- function(vec) {
+  case_when(
+    vec < 25 ~ "Low",
+    vec < 75 ~ "Medium",
+    TRUE     ~ "High"
+  )
+}
+```
+
+
+Benchmark Performance
+```{r}
+bm_results <- microbenchmark(
+  if_else_loop     = if_else_loop(x),
+  base_ifelse   = base_ifelse(x),
+  dplyr_if_else = dplyr_if_else(x),
+  dplyr_case_when = dplyr_case_when(x),
+  times = 30
+)
+
+# Print tabular summary
+print(bm_results)
+
+# Visualize results
+autoplot(bm_results) +
+  labs(
+    title = "Performance Comparison: Conditional Logic in R",
+    x = "Method",
+    y = "Time (milliseconds)"
+  ) +
+  theme_minimal()
+```

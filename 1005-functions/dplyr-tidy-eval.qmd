@@ -1,0 +1,91 @@
+
+```{r}
+data(diamonds, package = "ggplot2")
+diamonds
+```
+
+Let's compute the `caret` for each type of `cut`.  So, this will work:
+```{r}
+diamonds |> 
+    dplyr::group_by(cut) |>
+    dplyr::summarize(mean(carat))
+```
+because dplyr uses **tidy evaluation** to allow referring to names of variables without any special treatment.
+
+
+But this won't:
+```{r}
+diamonds |> 
+    dplyr::group_by("cut") |>
+    dplyr::summarize(mean("carat"))
+```
+because there are no column called `"cut"` or `"carat"` (notice the quotation marks).
+
+
+And this won't work also:
+```{r}
+gv <- "cut"
+sv <- "carat"
+
+diamonds |> 
+    dplyr::group_by(gv) |>
+    dplyr::summarize(mean(sv))
+```
+because of the same reason above.
+
+
+This won't work also although we use the embracing operator (we wrap the variables in braces) to tell dplyr to use the value stored inside the variables (not the variable name as a literal column name)
+```{r}
+gv <- "cut"
+sv <- "carat"
+
+diamonds |> 
+    dplyr::group_by({{ gv }}) |>
+    dplyr::summarize(mean({{ sv }}))
+```
+because the embracing operator expects bare unquoted column names.
+
+
+So, we need to turn them into strings into symbols
+```{r}
+gv <- rlang::sym("cut")
+sv <- rlang::sym("carat")
+
+diamonds |> 
+    dplyr::group_by({{ gv }}) |>
+    dplyr::summarize(mean({{ sv }}))
+```
+
+However, when using functions, we can pass column names unquoted directly.
+```{r}
+gm <- function(gv, sv) {
+    diamonds |> 
+        dplyr::group_by({{ gv }}) |>
+        dplyr::summarize(mean({{ sv }}))
+}
+
+gm(cut, carat)
+```
+
+Let's try to calculate the mean after group by 2 variable.  This does not work because `c(cut, color)` results in a vector that combine the values of both variables.
+```{r}
+gm <- function(gv, sv) {
+    diamonds |> 
+        dplyr::group_by({{ gv }}) |>
+        dplyr::summarize(mean({{ sv }}))
+}
+
+gm(c(cut, color), carat)
+```
+because `group_by` uses data-masking so we need to use tidy-selection via `pick()` inside it
+
+
+```{r}
+gm <- function(gv, sv) {
+    diamonds |> 
+        dplyr::group_by(dplyr::pick({{ gv }})) |>
+        dplyr::summarize(mean({{ sv }}))
+}
+
+gm(c(cut, color), carat)
+```
