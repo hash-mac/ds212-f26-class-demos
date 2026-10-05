@@ -97,4 +97,3 @@ gm(c(cut, color), carat)
 
 
 
-
