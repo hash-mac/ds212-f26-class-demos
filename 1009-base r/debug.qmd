@@ -1,0 +1,67 @@
+Use browser() to stop execution in RStudio to inspect the function
+```{r}
+fun1 <- function(v) {
+  browser()
+  
+  v * 2
+}
+
+fun1(c(1, 2, 3)) |> print()
+```
+
+Use try() to catch error
+```{r}
+fun2 <- function(v) {
+  v * 2
+}
+
+fun2(c("a", "b"))
+try(fun2(c("a", "b")))
+try(fun2(c("a", "b")), silent = TRUE)
+```
+
+
+Use custom error message
+```{r}
+fun3 <- function(v) {
+  if(!is.numeric(v)) {
+    stop("Not Numeric")
+  }
+  
+  v * 2
+}
+
+fun3(c("a", "b"))
+try(fun3(c("a", "b")))
+try(fun3(c("a", "b")), silent = TRUE)
+```
+
+```{r}
+f1 <- function(n) {
+  x <- numeric()
+  for (i in 1:n) {
+    x <- c(x, i)
+  }
+  x
+}
+
+f1.5 <- function(n) {
+  x <- numeric()
+  for (i in 1:n) {
+    x[[i]] <- i
+  }
+  
+  x
+}
+
+f2 <- function(n) {
+  x <- numeric(n)
+  for (i in 1:n) {
+    x[[i]] <- i
+  }
+  x
+}
+
+bench::mark(f1(1e4), f1.5(1e4), f2(1e4))
+```
+
