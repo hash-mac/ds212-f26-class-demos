@@ -9,6 +9,7 @@ fun1 <- function(v) {
 fun1(c(1, 2, 3)) |> print()
 ```
 
+
 Use try() to catch error
 ```{r}
 fun2 <- function(v) {
@@ -36,6 +37,8 @@ try(fun3(c("a", "b")))
 try(fun3(c("a", "b")), silent = TRUE)
 ```
 
+
+Benchmark
 ```{r}
 f1 <- function(n) {
   x <- numeric()
@@ -64,4 +67,14 @@ f2 <- function(n) {
 
 bench::mark(f1(1e4), f1.5(1e4), f2(1e4))
 ```
+
+
+
+
+
+
+
+
+
+
 
