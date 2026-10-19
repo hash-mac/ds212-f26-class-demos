@@ -37,5 +37,35 @@ sales
 ```{r}
 sales |> 
     select(-prod_id) |> 
-    map(\(x) {c(m = mean(x, na.rm = TRUE), mi = min(x), max = max(x))})
+    map_df(function(x) {
+      c(mean = mean(x, na.rm = TRUE), 
+        min = min(x, na.rm = TRUE), 
+        max = max(x, na.rm = TRUE))}, .id = "Month")
+  
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
