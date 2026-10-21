@@ -1,0 +1,54 @@
+```{r}
+v <- c(1, 2, 3, 4)
+v
+```
+
+```{r}
+v |> purrr::map(\(x) x * 2)
+```
+
+```{r}
+v |> purrr::map_dbl(\(x) x * 2)
+```
+
+```{r}
+df <- data.frame(a=c(1,1,1), 
+                 b=c(2,2,2), 
+                 c=c(3,3,3), 
+                 d=c(4,4,4))
+df
+```
+
+```{r}
+df |> purrr::map(\(x) x * 2)
+```
+
+```{r}
+df |> purrr::map_df(\(x) x * 2)
+```
+
+
+```{r}
+v1 <- c(1, 2, 3, 4)
+v2 <- c(5, 6, 7, 8)
+
+v1 |> purrr::map2(v2, \(x, y) x * y)
+```
+
+
+
+```{r}
+v <- c(1, 2, 3, 4)
+list(v) |> purrr::pmap(\(x) x * 2)
+```
+
+
+```{r}
+v <- c(1, 2, 3, 4)
+list(v, v) |> purrr::pmap(\(x, y) x * y)
+```
+
+```{r}
+v <- c(1, 2, 3, 4)
+list(v, v, v) |> purrr::pmap(\(x, y, z) x * y * z)
+```
