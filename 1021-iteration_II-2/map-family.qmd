@@ -1,13 +1,23 @@
+---
+title: "Map Family"
+---
+
+## map
+
 ```{r}
 v <- c(1, 2, 3, 4)
 v
 ```
 
 ```{r}
+# input: vector (atomic vector)
+# output: list
 v |> purrr::map(\(x) x * 2)
 ```
 
 ```{r}
+# input: vector (atomic vector)
+# output: double (atomic) vector
 v |> purrr::map_dbl(\(x) x * 2)
 ```
 
@@ -20,13 +30,19 @@ df
 ```
 
 ```{r}
+# input: vector (dataframe)
+# output: list
 df |> purrr::map(\(x) x * 2)
 ```
 
 ```{r}
+# input: vector (dataframe)
+# output: dataframe
 df |> purrr::map_df(\(x) x * 2)
 ```
 
+
+## map2
 
 ```{r}
 v1 <- c(1, 2, 3, 4)
@@ -36,12 +52,12 @@ v1 |> purrr::map2(v2, \(x, y) x * y)
 ```
 
 
+## pmap
 
 ```{r}
 v <- c(1, 2, 3, 4)
 list(v) |> purrr::pmap(\(x) x * 2)
 ```
-
 
 ```{r}
 v <- c(1, 2, 3, 4)
