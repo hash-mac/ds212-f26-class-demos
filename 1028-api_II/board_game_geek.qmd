@@ -31,7 +31,7 @@ There are 11 supported parameters that can be used in the query. Let's use the f
 ## Build Request
 
 ```{r}
-bearer_token <- readLines("../../../../hashcx/api-keys/boardgamegeek.bearer-token")
+bearer_token <- readLines("../../../hashcx/api-keys/boardgamegeek.bearer-token")
 
 base_url <- "https://boardgamegeek.com"
 file_path <- "xmlapi2/thing"
