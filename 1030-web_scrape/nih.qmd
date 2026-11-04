@@ -1,0 +1,22 @@
+---
+title: "nih"
+---
+
+```{r}
+library(rvest)
+```
+
+```{r}
+nih <- read_html("https://www.nih.gov/news-events/news-releases")
+nih
+```
+
+
+```{r}
+# Retrieve and inspect article titles
+article_titles <- nih |>
+    html_elements(".thumbnail-teaser__heading") |>
+    html_text()
+head(article_titles)
+```
+
