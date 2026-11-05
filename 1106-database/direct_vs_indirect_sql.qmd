@@ -1,0 +1,58 @@
+---
+title: "Direct vs Indirect SQL"
+---
+
+Create DuckDB driver
+```{r}
+drv <- duckdb::duckdb()
+drv
+```
+
+
+Create in-memory DuckDB database & connect to it
+```{r}
+con <- DBI::dbConnect(drv)
+con
+```
+
+
+Create sample dataset
+```{r} 
+ds <- tibble::tribble(
+    ~x, ~y,
+    1, 10,
+    2, 20,
+    3, 30
+)
+ds
+```
+
+
+Add sample dataset to DB
+```{r}
+DBI::dbWriteTable(con, "ds", ds)
+DBI::dbListTables(con)
+```
+
+
+Direct SQL
+```{r}
+DBI::dbGetQuery(con, "SELECT * FROM ds WHERE y > 20")
+```
+
+
+Indirect SQL vis dplyr verbs
+```{r}
+# create tbl object first
+db_ds <- dplyr::tbl(con, "ds")
+db_ds
+
+# use tbl object to create query
+query <- db_ds |> dplyr::filter( y > 20)
+
+# show query
+query |> dplyr::show_query()
+
+# run query
+dplyr::collect(query)
+```
