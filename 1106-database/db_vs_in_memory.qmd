@@ -80,5 +80,6 @@ bench::mark(
   iterations = 5,
   check = FALSE
 ) |> 
-  select(Approach = expression, "Median Time" = median, Memory = mem_alloc)
+  select(Approach = expression, "Median Time" = median, Memory = mem_alloc) |> 
+  gt::gt()
 ```
