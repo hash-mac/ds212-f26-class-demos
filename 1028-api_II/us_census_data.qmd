@@ -29,7 +29,7 @@ The U.S. Census Data API required (free) key registration when passing the [Quer
 
 ## Build Request
 ```{r}
-us_census_data_api_key <- readLines("../../../../hashcx/api-keys/us-census-data.key")
+us_census_data_api_key <- readLines("../../../hashcx/api-keys/us-census-data.key")
 
 base_url <- "https://api.census.gov"
 file_path <- "data/2026/cps/basic/sep"

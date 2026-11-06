@@ -1,0 +1,85 @@
+---
+title: "DB vs In-Memory"
+---
+
+```{r}
+library(dplyr)
+library(tidyr)
+```
+
+Create sample dataset
+```{r}
+n_rows <- 5000000
+set.seed(42)
+
+ds <- data.frame(
+  customer_id = sample(1:50000, n_rows, replace = TRUE),
+  region      = sample(c("North", "South", "East", "West"), n_rows, replace = TRUE),
+  q1_sales    = runif(n_rows, 10, 500),
+  q2_sales    = runif(n_rows, 10, 500),
+  q3_sales    = runif(n_rows, 10, 500),
+  q4_sales    = runif(n_rows, 10, 500)
+)
+head(ds)
+```
+
+
+Setup DuckDB
+```{r}
+con <- DBI::dbConnect(duckdb::duckdb())
+DBI::dbWriteTable(con, "ds", ds)
+
+db_ds <- dplyr::tbl(con, "ds")
+```
+
+
+dplyr function
+```{r}
+im_fun <- function() {
+  ds |>
+    pivot_longer(
+      cols = starts_with("q"),
+      names_to = "quarter",
+      values_to = "amount"
+    ) |>
+    filter(amount > 100) |>
+    group_by(region, quarter) |>
+    summarise(
+      total_sales = sum(amount),
+      avg_sales   = mean(amount),
+      .groups     = "drop"
+    )
+}
+```
+
+SQL function
+```{r}
+sql_fun <- function() {
+  db_ds |>
+    pivot_longer(
+      cols = starts_with("q"),
+      names_to = "quarter",
+      values_to = "amount"
+    ) |>
+    filter(amount > 100) |>
+    group_by(region, quarter) |>
+    summarise(
+      total_sales = sum(amount),
+      avg_sales   = mean(amount),
+      .groups     = "drop"
+    ) |>
+    collect()
+}
+```
+
+
+```{r}
+bench::mark(
+  in_memory = im_fun(),
+  sql = sql_fun(),
+  iterations = 5,
+  check = FALSE
+) |> 
+  select(Approach = expression, "Median Time" = median, Memory = mem_alloc) |> 
+  gt::gt()
+```

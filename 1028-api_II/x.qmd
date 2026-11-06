@@ -33,7 +33,7 @@ According to the [Getting Access page](https://docs.x.com/x-api/getting-started/
 ## Build Request
 
 ```{r}
-bearer_token <- readLines("../../../../hashcx/api-keys/x.bearer-token")
+bearer_token <- readLines("../../../hashcx/api-keys/x.bearer-token")
 
 base_url <- "https://api.x.com/"
 file_path <- "2/tweets/search/recent"
@@ -95,3 +95,8 @@ results |>
   dplyr::select(retweet_count, text) |> 
   gt::gt()
 ```
+
+
+
+
+

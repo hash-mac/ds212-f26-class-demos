@@ -83,3 +83,33 @@ results |>
   dplyr::mutate(len = stringr::str_length(name)) |> 
   dplyr::slice_min(order_by = len, n = 10)
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
