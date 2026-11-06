@@ -1,0 +1,137 @@
+---
+title: "Database Demo"
+---
+
+## Install ODBC Drivers
+```
+setup odbc on macOS
+install homebrew -> follow instruction to add homebrew to PATH
+brew install unixodbc
+brew install psqlodbc
+```
+
+## Local DB + Generic ODBC Package
+```{r}
+library(DBI)
+library(odbc)
+
+con <- dbConnect(
+  odbc::odbc(),
+  Driver   = "/opt/homebrew/lib/psqlodbcw.so",
+  Server   = "localhost",
+  Port     = 5432,
+  Database = "postgres",
+  UID      = Sys.info()["user"],
+  PWD      = ""
+)
+
+dbWriteTable(con, )
+
+dbExecute(con, "CREATE TEMP TABLE users (id SERIAL PRIMARY KEY, name VARCHAR(50));")
+dbExecute(con, "INSERT INTO users (name) VALUES ('Alice'), ('Bob');")
+
+result <- dbGetQuery(con, "SELECT * FROM users LIMIT 10")
+print(result)
+
+dbDisconnect(con)
+```
+
+
+## Local DB + RPostgres R Package
+```{r}
+library(DBI)
+library(RPostgres)
+
+con <- dbConnect(
+  RPostgres::Postgres(),
+  dbname   = "postgres",
+  host     = "localhost",
+  port     = 5432,
+  user     = as.character(Sys.info()["user"]),
+  password = ""
+)
+
+dbExecute(con, "CREATE TEMP TABLE users (id SERIAL PRIMARY KEY, name VARCHAR(50));")
+dbExecute(con, "INSERT INTO users (name) VALUES ('Alice'), ('Bob');")
+
+result <- dbGetQuery(con, "SELECT * FROM users LIMIT 10")
+print(result)
+
+dbDisconnect(con)
+```
+
+
+## Remote DB + Generic ODBC Package
+```{r}
+library(DBI)
+library(odbc)
+
+pwd <- readLines("../../hashcx/api-keys/neon.tech-ds212.pwd")
+
+con <- dbConnect(
+  odbc::odbc(),
+  Driver   = "/opt/homebrew/lib/psqlodbcw.so",
+  Server   = "ep-patient-cell-bd0cj75h-pooler.c-8.us-east-2.aws.neon.tech", # Remote host
+  Port     = 5432,
+  Database = "neondb",
+  UID      = "neondb_owner",
+  PWD      = pwd,
+  SSLMode  = "require"
+)
+
+dbExecute(con, "
+  CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  );
+")
+
+dbExecute(con, "
+  INSERT INTO users (name) 
+  VALUES ('Alice'), ('Bob');
+")
+
+result <- dbGetQuery(con, "SELECT * FROM users LIMIT 10")
+print(result)
+
+dbDisconnect(con)
+```
+
+
+## Remote DB + RPostgres R Package
+```{r}
+library(DBI)
+library(odbc)
+
+pwd <- readLines("../../hashcx/api-keys/neon.tech-ds212.pwd")
+
+con <- dbConnect(
+  odbc::odbc(),
+  Driver   = "/opt/homebrew/lib/psqlodbcw.so",
+  Server   = "ep-patient-cell-bd0cj75h-pooler.c-8.us-east-2.aws.neon.tech", # Remote host
+  Port     = 5432,
+  Database = "neondb",
+  UID      = "neondb_owner",
+  PWD      = pwd,
+  SSLMode  = "require"
+)
+
+dbExecute(con, "
+  CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  );
+")
+
+dbExecute(con, "
+  INSERT INTO users (name) 
+  VALUES ('Alice'), ('Bob');
+")
+
+result <- dbGetQuery(con, "SELECT * FROM users LIMIT 10")
+print(result)
+
+dbDisconnect(con)
+```
